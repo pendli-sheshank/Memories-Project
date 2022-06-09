@@ -28,14 +28,21 @@ const Form = ({ currentId, setCurrentId }) => {
     e.preventDefault();
     if (currentId) {
       dispatch(updatePost(currentId, postData));
+      clear();
     } else {
       dispatch(createPost(postData));
+      clear();
     }
   };
-  const clear = () => {};
-
-  const handleChange = (e) => {
-    setPostData();
+  const clear = () => {
+    setCurrentId(null);
+    setPostData({
+      creator: "",
+      title: "",
+      message: "",
+      tags: "",
+      selectedFile: "",
+    });
   };
 
   return (
@@ -96,7 +103,7 @@ const Form = ({ currentId, setCurrentId }) => {
           value={postData.tags}
           onChange={(e) =>
             setPostData(
-              { ...postData, tags: e.target.value },
+              { ...postData, tags: e.target.value.split(",") },
               console.log(postData)
             )
           }

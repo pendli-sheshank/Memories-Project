@@ -12,8 +12,11 @@ import {
 import { FaThumbsUp } from "react-icons/fa";
 import { MdMoreHoriz } from "react-icons/md";
 import moment from "moment";
+import { useDispatch } from "react-redux";
+import { deletePost, likePost } from "../../../actions/posts";
 
 const Post = ({ post, setCurrentId }) => {
+  const dispatch = useDispatch();
   const classes = useStyles();
 
   return (
@@ -40,19 +43,36 @@ const Post = ({ post, setCurrentId }) => {
           </Button>
         </div>
         <div className={classes.details}>
-          <Typography variant="h6">{post.title}</Typography>
           <Typography variant="body2" color="textSecondary">
             {post.tags.map((tag) => `# ${tag}`)}
           </Typography>
         </div>
+        <Typography className={classes.title} variant="h5">
+          {post.title}
+        </Typography>
         <CardContent>
-          <Typography variant="h5">{post.message}</Typography>
+          <Typography
+            gutterBottom
+            color="textSecondary"
+            component="p"
+            variant="body2"
+          >
+            {post.message}
+          </Typography>
         </CardContent>
         <CardActions className={classes.cardActions}>
-          <Button size="small" color="primary" onClick={() => {}}>
+          <Button
+            size="small"
+            color="primary"
+            onClick={() => {
+              dispatch(likePost(post._id));
+            }}
+          >
             {<FaThumbsUp fontSize="small" />}Like {post.likeCount}
           </Button>
-          <Button size="small">Delete</Button>
+          <Button onClick={() => dispatch(deletePost(post._id))} size="small">
+            Delete
+          </Button>
         </CardActions>
       </Card>
     </div>
