@@ -13,7 +13,7 @@ import { FaThumbsUp } from "react-icons/fa";
 import { MdMoreHoriz } from "react-icons/md";
 import moment from "moment";
 
-const Post = ({ post }) => {
+const Post = ({ post, setCurrentId }) => {
   const classes = useStyles();
 
   return (
@@ -31,11 +31,16 @@ const Post = ({ post }) => {
           </Typography>
         </div>
         <div className={classes.overlay2}>
-          <Button style={{ color: "white" }} size="small" onClick={() => {}}>
+          <Button
+            style={{ color: "white" }}
+            size="small"
+            onClick={() => setCurrentId(post._id)}
+          >
             <MdMoreHoriz fontSize="default" />
           </Button>
         </div>
         <div className={classes.details}>
+          <Typography variant="h6">{post.title}</Typography>
           <Typography variant="body2" color="textSecondary">
             {post.tags.map((tag) => `# ${tag}`)}
           </Typography>
