@@ -16,13 +16,27 @@ import { gapi } from "gapi-script";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
+const initialState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
+
 const Auth = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [formData, setFormData] = useState(initialState);
   const [showPass, setShowPass] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
-  const handleSubmit = () => {};
-  const handleChange = () => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
   const handleShowPassword = () => {
     setShowPass((prevState) => !prevState);
   };
@@ -73,8 +87,15 @@ const Auth = () => {
             {isSignUp && (
               <>
                 <Input
-                  name="First Name"
+                  name="firstName"
                   label="firstName"
+                  handleChange={handleChange}
+                  autoFocus
+                  half={6}
+                />
+                <Input
+                  name="lastName"
+                  label="lastName"
                   handleChange={handleChange}
                   autoFocus
                   half={6}
@@ -82,7 +103,7 @@ const Auth = () => {
               </>
             )}
             <Input
-              name="Email"
+              name="email"
               label="email"
               handleChange={handleChange}
               autoFocus
@@ -90,7 +111,7 @@ const Auth = () => {
               type="email"
             />
             <Input
-              name="Password"
+              name="password"
               label="password"
               handleChange={handleChange}
               autoFocus
@@ -100,12 +121,12 @@ const Auth = () => {
             />
             {isSignUp && (
               <Input
-                name="Confirm Password"
+                name="confirmPassword"
                 label="confirmPassword"
                 handleChange={handleChange}
                 autoFocus
                 half={6}
-                type="passowrd"
+                type="password"
               />
             )}
           </Grid>
