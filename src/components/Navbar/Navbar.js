@@ -1,11 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AppBar, Avatar, Button, Toolbar, Typography } from "@mui/material";
 import useStyles from "./Styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const Navbar = () => {
   const classes = useStyles();
-  const user = null;
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  console.log(user);
+
+  const handleLogout = () => {
+    dispatch({ type: "LOGOUT" });
+    navigate("/auth");
+    setUser(null);
+  };
+
+  useEffect(() => {
+    const token = user?.token;
+
+    setUser(JSON.parse(localStorage.getItem("profile")));
+  }, [location]);
+
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
       <div className={classes.brandContainer}>
@@ -28,7 +46,7 @@ const Navbar = () => {
             <Typography className={classes.userName} variant="h5">
               {user.result.name}
             </Typography>
-            <Button>Logout</Button>
+            <Button onClick={handleLogout}>Logout</Button>
           </div>
         ) : (
           <Button component={Link} to="/auth">

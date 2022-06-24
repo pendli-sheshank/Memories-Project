@@ -7,12 +7,18 @@ import {
   Grid,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useStyles from "./Styles";
 import { MdOutlineLock } from "react-icons/md";
 import Input from "./Input";
+import { GoogleLogin } from "react-google-login";
+import { gapi } from "gapi-script";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [showPass, setShowPass] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const handleSubmit = () => {};
@@ -21,9 +27,37 @@ const Auth = () => {
     setShowPass((prevState) => !prevState);
   };
 
+  useEffect(() => {
+    function start() {
+      gapi.client.init({
+        clientId:
+          "284253063789-1hh311a1gu5jk5lk5sjmouiq6h9kkm9r.apps.googleusercontent.com",
+        scope: "email",
+      });
+    }
+
+    gapi.load("client:auth2", start);
+  }, []);
+
   const swithMode = () => {
     setIsSignUp((prevState) => !prevState);
     handleShowPassword(false);
+  };
+
+  const googleFailure = (err) => {
+    console.log(err);
+  };
+  const googleSuccess = async (res) => {
+    console.log(res);
+    const result = res?.profileObj;
+    const token = res?.tokenId;
+
+    try {
+      dispatch({ type: "AUTH", data: { result, token } });
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const classes = useStyles();
@@ -75,6 +109,23 @@ const Auth = () => {
               />
             )}
           </Grid>
+          <GoogleLogin
+            clientId="284253063789-1hh311a1gu5jk5lk5sjmouiq6h9kkm9r.apps.googleusercontent.com"
+            render={(renderProps) => (
+              <Button
+                className="btn btn-primary"
+                variant="contained"
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}
+              >
+                Google Sign In
+              </Button>
+            )}
+            onSuccess={googleSuccess}
+            onFailure={googleFailure}
+            cookiePolicy={"single_host_origin"}
+          />
+
           <Button variant="contained" type="submit">
             {isSignUp ? "Sign up" : "Sign In"}
           </Button>
