@@ -7,7 +7,6 @@ import { createPost, updatePost } from "../../actions/posts";
 
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({
-    creator: "",
     title: "",
     message: "",
     tags: "",
@@ -23,21 +22,34 @@ const Form = ({ currentId, setCurrentId }) => {
 
   const dispatch = useDispatch();
   const classes = useStyles();
+  const user = JSON.parse(localStorage.getItem("profile"));
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (currentId) {
-      dispatch(updatePost(currentId, postData));
+      dispatch(
+        updatePost(currentId, { ...postData, name: user?.result?.name })
+      );
       clear();
     } else {
-      dispatch(createPost(postData));
+      dispatch(createPost({ ...postData, name: user?.result?.name }));
       clear();
     }
   };
+
+  if (!user?.result?.name) {
+    return (
+      <Paper className={classes.paper}>
+        <Typography variant="h6" align="center">
+          Please Sign in before creating post
+        </Typography>
+      </Paper>
+    );
+  }
+
   const clear = () => {
     setCurrentId(null);
     setPostData({
-      creator: "",
       title: "",
       message: "",
       tags: "",
@@ -56,19 +68,7 @@ const Form = ({ currentId, setCurrentId }) => {
         <Typography variant="h5">
           {currentId ? "Edit a Memory" : "Create a Memory"}
         </Typography>
-        <TextField
-          variant="outlined"
-          name="creator"
-          label="Creator"
-          fullWidth
-          value={postData.creator}
-          onChange={(e) =>
-            setPostData(
-              { ...postData, creator: e.target.value },
-              console.log(postData)
-            )
-          }
-        />
+
         <TextField
           variant="outlined"
           name="title"

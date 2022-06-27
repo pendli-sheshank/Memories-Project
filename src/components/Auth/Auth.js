@@ -15,6 +15,7 @@ import { GoogleLogin } from "react-google-login";
 import { gapi } from "gapi-script";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { signin, signup } from "../../actions/auth";
 
 const initialState = {
   firstName: "",
@@ -30,9 +31,15 @@ const Auth = () => {
   const [formData, setFormData] = useState(initialState);
   const [showPass, setShowPass] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
+    if (isSignUp) {
+      dispatch(signup(formData, navigate));
+    } else {
+      dispatch(signin(formData, navigate));
+    }
   };
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -55,7 +62,7 @@ const Auth = () => {
 
   const swithMode = () => {
     setIsSignUp((prevState) => !prevState);
-    handleShowPassword(false);
+    setShowPass(false);
   };
 
   const googleFailure = (err) => {
